@@ -2,14 +2,26 @@
 
 
 
+
+<!-- transition으로 애니메이션 주기  -->
+<transition name="fade">
   <Modal @closeModal="모달창열렸니 = false;" :원룸들="원룸들" :누른거="누른거" :모달창열렸니="모달창열렸니"/>
-  
+</transition>
+
+<!-- <div class="start" :class="{end : 모달창열렸니 }">
+  <Modal @closeModal="모달창열렸니 = false;" :원룸들="원룸들" :누른거="누른거" :모달창열렸니="모달창열렸니"/>
+</div> -->
+
     <div class="menu">
       <a v-for="i in 메뉴들" :key="i">{{i}} </a>
     </div>
+
 <Discount/>
 
-
+<button @click="priceSort">낮은가격순정렬</button>
+<button @click="highpriceSort">높은가격순정렬</button>
+<button @click="titleSort">이름순정렬</button>
+<button @click="sortBack">되돌리기</button>
 
     <h2 class="title" :style="스타일">원룸샵</h2>
   
@@ -96,6 +108,46 @@
     
     
     <script>
+//2023 년 7월 2일 -2 상품정렬기능과 데이터 원본 보존 [...원본자료]
+//자바스크립트 데이터 정렬 후 html에 반영 
+//자바스크립트 sort 복습 var array = [3,5,3]; array.sort(function(a,b){ return a-b})
+//<button @click="priceSort">가격순정렬</button> 으로 함수넣음 
+//methods에서 함수설정 
+// priceSort(){
+//           this.원룸들.sort(function(a,b){
+//             return a.price - b.price 
+//           })
+//         },
+// 원룸들오리지널:data, 원룸들:data 이렇게 쓴다고 data의 사본이 생기지는 않음 
+//이렇게 해야함 => 원룸들오리지널:[...data], 원룸들:data 
+// 함수에서도 이렇게 => sortBack(){
+//           this.원룸들 = [...this.원룸들오리지널];
+//         },
+//  titleSort(){
+// this.원룸들.sort(function(a,b){
+//           return a.title.localeCompare(b.title);
+//         });
+//       },
+
+//2023 년 7월 2일 animation 넣는법 
+//1.시작전 class 명 2. 애니메이션 끝난 후 class명 
+//class 명을 조건부로 넣으려면 {클래스명:조건} => class ="{end: 모달창열렸니}"
+//v-if v-else 등에 <transition></transition name="fade(작명한거)">으로 감싸면 더 쉽게 애니메이션 줄 수 있음 
+// 이후 style에가서 아래와 같이 스타일링 
+// .fade-enter-from { opacity:0;}
+// .fade-enter-active { transition: all 1s;}
+// .fade-enter-to{ opacity:1;}
+// 퇴장시에는 enter를 leave로 하면 애니매이션 적용됨 
+// 위에서 밑으로 내려오기 
+// .fade-enter-from {
+//       transform: translateY(-1000px);}
+//     .fade-enter-active{
+//       transition: all 1s;
+//     }
+//     .fade-enter-to{
+//       transform: translateY(0px);
+//     }
+
 //2023 년 7월 1일 watcher로 데이터 감시하는 법
 //watch :{month(){ 사용자가 month를 글자로 입력하면 경고문 띄워주셈  } =>month라는 데이터가 변할때마다 여기있는 코드 실행됨 
 
@@ -211,6 +263,7 @@
       name: 'App',
       data(){
         return{
+          원룸들오리지널:[...data],
           오브젝트: { name:'kim', age:20},
           누른거: 0,
           원룸들:data,
@@ -226,8 +279,25 @@
       methods: {
         increase(i){
           this.신고수[i] +=1;
-        }
-  
+        },
+        priceSort(){
+          this.원룸들.sort(function(a,b){
+            return a.price - b.price 
+          })
+        },
+        highpriceSort(){
+          this.원룸들.sort(function(a,b){
+            return b.price - a.price 
+          })
+        },
+        sortBack(){
+          this.원룸들 = [...this.원룸들오리지널];
+        },
+        titleSort(){
+          this.원룸들.sort(function(a,b){
+            return a.title.localeCompare(b.title);
+          });
+        },
       },
   
       components: {
@@ -244,7 +314,41 @@
    
     
     <style>
-    
+     .fade-leave-from {
+      opacity:1;}
+    .fade-leave-active{
+      transition: all 1s;
+    }
+    .fade-leave-to{
+      opacity:0;
+    }
+    .fade-enter-from {
+      opacity:0;}
+    .fade-enter-active{
+      transition: all 1s;
+    }
+    .fade-enter-to{
+      opacity:1;
+    }
+/* .fade-enter-from {
+       transform: translateY(-1000px);}
+    .fade-enter-active{
+      transition: all 1s;
+     }
+     .fade-enter-to{
+       transform: translateY(0px);
+     } */
+
+
+    .start {
+      opacity: 0;
+      transition: all 1s;
+    }
+
+    .end{
+      opacity: 1;
+    }
+
     body {
       margin: 0;
     }
