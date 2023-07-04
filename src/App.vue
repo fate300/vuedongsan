@@ -321,7 +321,7 @@
         mounted(){
           setTimeout(()=>{
             this.showDiscount = false;
-          }, 2000);
+          }, 30000);
         },
         components: {
           //Discount(작명): Discount (가져온거) 걍 아래처럼 가능
